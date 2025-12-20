@@ -9,7 +9,14 @@ from utils import preprocess_image
 from decay import compute_all_decay, IDEAL_SHELF, ROOM_SHELF, HIGH_HUMIDITY_SHELF
 
 app = Flask(__name__)
-CORS(app)
+CORS(app,
+     resources={r"/api/*": {"origins": [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://freshness-indicator.netlify.app/"
+    ]}},
+    supports_credentials=True
+)
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -26,13 +33,13 @@ model = load_model(MODEL_PATH)
 
 # Supported fruits and vegetables
 SUPPORTED_ITEMS = [
-    {"value": "apple", "label": "Apple 🍎"},
-    {"value": "banana", "label": "Banana 🍌"},
-    {"value": "tomato", "label": "Tomato 🍅"},
-    {"value": "orange", "label": "Orange 🍊"},
-    {"value": "potato", "label": "Potato 🥔"},
-    {"value": "cucumber", "label": "Cucumber 🥒"},
-    {"value": "capsicum", "label": "Capsicum 🫑"},
+    {"value": "apple", "label": "Apple"},
+    {"value": "banana", "label": "Banana"},
+    {"value": "tomato", "label": "Tomato"},
+    {"value": "orange", "label": "Orange"},
+    {"value": "potato", "label": "Potato"},
+    {"value": "cucumber", "label": "Cucumber"},
+    {"value": "capsicum", "label": "Capsicum"},
     {"value": "okra", "label": "Okra"}
 ]
 
