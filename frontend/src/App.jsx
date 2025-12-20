@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import ImageUpload from "./components/ImageUpload";
 import ResultsPanel from "./components/ResultsPanel";
 import axios from "axios";
-import { API_ENDPOINTS } from './config/api';
+import { API_ENDPOINTS } from "./config/api";
 
 const SUPPORTED_ITEMS = [
   { value: "apple", label: "Apple" },
@@ -38,12 +38,6 @@ function App() {
   }, []);
 
   const handleAnalyze = async () => {
-    const response = await axios.post(API_ENDPOINTS.predict, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      timeout: 120000,
-    });
     if (!selectedImage || !selectedItem) {
       setError("Please select both an image and a fruit/vegetable type");
       return;
@@ -57,10 +51,11 @@ function App() {
     formData.append("fruit", selectedItem);
 
     try {
-      const response = await axios.post("/api/predict", formData, {
+      const response = await axios.post(API_ENDPOINTS.predict, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        timeout: 120000,
       });
 
       if (response.data.success) {
