@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from './components/Navbar';
-import ImageUpload from './components/ImageUpload';
-import ResultsPanel from './components/ResultsPanel';
-import axios from 'axios';
+import React, { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "./components/Navbar";
+import ImageUpload from "./components/ImageUpload";
+import ResultsPanel from "./components/ResultsPanel";
+import axios from "axios";
+import { API_ENDPOINTS } from './config/api';
 
 const SUPPORTED_ITEMS = [
   { value: "apple", label: "Apple" },
@@ -13,11 +14,11 @@ const SUPPORTED_ITEMS = [
   { value: "potato", label: "Potato" },
   { value: "cucumber", label: "Cucumber" },
   { value: "capsicum", label: "Capsicum" },
-  { value: "okra", label: "Okra" }
+  { value: "okra", label: "Okra" },
 ];
 
 function App() {
-  const [selectedItem, setSelectedItem] = useState('');
+  const [selectedItem, setSelectedItem] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [results, setResults] = useState(null);
@@ -37,8 +38,14 @@ function App() {
   }, []);
 
   const handleAnalyze = async () => {
+    const response = await axios.post(API_ENDPOINTS.predict, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 120000,
+    });
     if (!selectedImage || !selectedItem) {
-      setError('Please select both an image and a fruit/vegetable type');
+      setError("Please select both an image and a fruit/vegetable type");
       return;
     }
 
@@ -46,23 +53,26 @@ function App() {
     setError(null);
 
     const formData = new FormData();
-    formData.append('image', selectedImage);
-    formData.append('fruit', selectedItem);
+    formData.append("image", selectedImage);
+    formData.append("fruit", selectedItem);
 
     try {
-      const response = await axios.post('/api/predict', formData, {
+      const response = await axios.post("/api/predict", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
       if (response.data.success) {
         setResults(response.data);
       } else {
-        setError(response.data.error || 'Analysis failed');
+        setError(response.data.error || "Analysis failed");
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to analyze image. Please try again.');
+      setError(
+        err.response?.data?.error ||
+          "Failed to analyze image. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -73,13 +83,13 @@ function App() {
     setImagePreview(null);
     setResults(null);
     setError(null);
-    setSelectedItem('');
+    setSelectedItem("");
   };
 
   return (
     <div className="min-h-screen animated-gradient">
       <Navbar />
-      
+
       <main className="container mx-auto px-4 py-6 lg:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Panel - Image Upload */}
@@ -100,7 +110,7 @@ function App() {
               loading={loading}
               hasImage={!!selectedImage}
             />
-            
+
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -108,8 +118,18 @@ function App() {
                 className="glass rounded-2xl p-4 border border-red-500/30"
               >
                 <div className="flex items-center gap-3 text-red-400">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <span className="text-sm font-medium">{error}</span>
                 </div>
@@ -137,7 +157,7 @@ function App() {
           <div className="glass-light rounded-xl py-4 px-6 inline-block">
             <p className="text-dark-400 text-xs lg:text-sm">
               Prediction generated using CNN‑based visual analysis combined with
-      produce‑specific non‑linear decay modeling.
+              produce‑specific non‑linear decay modeling.
             </p>
           </div>
         </motion.div>
