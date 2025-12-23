@@ -1,0 +1,11 @@
+streamlit==1.29.0
+flask
+flask-cors
+requests
+numpy
+pandas
+opencv-python-headless
+pillow
+plotly
+scikit-learn
+tensorflow-cpu==2.15.0
