@@ -1,0 +1,14 @@
+# Web framework
+flask==3.0.0
+flask-cors==4.0.0
+Werkzeug==3.0.1
+
+# ML / DL
+tensorflow-cpu==2.13.0
+
+# Image processing
+opencv-python-headless==4.9.0.80
+Pillow==10.0.1
+
+# Numerical
+numpy==1.24.3
