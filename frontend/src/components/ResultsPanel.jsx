@@ -146,8 +146,8 @@ const MetricCard = ({ title, value, subtitle, icon, color }) => {
         <span className="text-xl">{icon}</span>
         <span className="text-dark-300 text-xs font-medium">{title}</span>
       </div>
-      <p className="text-2xl font-bold text-white">{value}</p>
-      <p className="text-dark-400 text-xs mt-1">{subtitle}</p>
+      <p className="text-1xl font-bold text-white">{subtitle}</p>
+      <p className="text-dark-400 text-xs mt-1">{value}</p>
     </motion.div>
   );
 };
