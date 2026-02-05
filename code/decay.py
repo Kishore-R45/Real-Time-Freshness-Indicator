@@ -9,7 +9,7 @@ IDEAL_SHELF = {
     "orange": 28,
     "potato": 30,
     "cucumber": 10,
-    "capsicum": 14,
+    "capsicum": 14.5,
     "okra": 3
 }
 
