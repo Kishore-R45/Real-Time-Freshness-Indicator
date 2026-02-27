@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StatusIndicator from './StatusIndicator';
 import FreshnessChart from './FreshnessChart';
+import TipsModal from './TipsModal';
 
 const ResultsPanel = ({ results, loading }) => {
+  const [showTips, setShowTips] = useState(false);
   if (loading) {
     return (
       <div className="glass rounded-3xl p-6 lg:p-8 min-h-[500px] flex items-center justify-center">
@@ -118,6 +120,38 @@ const ResultsPanel = ({ results, loading }) => {
             </div>
           </div>
         </div>
+
+        {/* Storage Tips Button */}
+        {results.tips && (
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowTips(true)}
+            className="w-full glass rounded-2xl p-4 flex items-center justify-between group border border-primary-500/20 hover:border-primary-500/50 transition-all duration-300"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center">
+                <span className="text-xl">💡</span>
+              </div>
+              <div className="text-left">
+                <p className="text-white font-medium text-sm">Storage Tips for {results.fruit}</p>
+                <p className="text-dark-400 text-xs">Learn how to store properly in different conditions</p>
+              </div>
+            </div>
+            <svg className="w-5 h-5 text-dark-400 group-hover:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </motion.button>
+        )}
+
+        {/* Tips Modal */}
+        {showTips && (
+          <TipsModal
+            tips={results.tips}
+            fruit={results.fruit}
+            onClose={() => setShowTips(false)}
+          />
+        )}
 
         {/* Status Indicator */}
         <StatusIndicator status={results.status} color={results.status_color} />

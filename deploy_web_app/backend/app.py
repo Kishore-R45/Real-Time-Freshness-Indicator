@@ -13,6 +13,7 @@ from backend.decay import (
     ROOM_SHELF,
     HIGH_HUMIDITY_SHELF
 )
+from backend.tips import STORAGE_TIPS
 
 # --------------------------------
 # Flask App Configuration
@@ -115,12 +116,44 @@ def predict():
             "initial_freshness": initial,
             "decay": decay,
             "status": status,
-            "status_color": color
+            "status_color": color,
+            "shelf_life": {
+                "ideal": IDEAL_SHELF[fruit],
+                "room": ROOM_SHELF[fruit],
+                "humid": HIGH_HUMIDITY_SHELF[fruit]
+            },
+            "chart_data": {
+                "labels": ["Ideal Storage", "Room Temp", "High Humidity"],
+                "freshness": [
+                    decay["ideal_final"],
+                    decay["room_final"],
+                    decay["humid_final"]
+                ],
+                "days_left": [
+                    decay["ideal_days_left"],
+                    decay["room_days_left"],
+                    decay["humid_days_left"]
+                ]
+            },
+            "tips": STORAGE_TIPS.get(fruit, {})
         })
 
     finally:
         if os.path.exists(filepath):
             os.remove(filepath)
+
+# --------------------------------
+# Tips endpoint
+# --------------------------------
+@app.route("/api/tips/<fruit>")
+def get_tips(fruit):
+    fruit = fruit.lower()
+    if fruit not in STORAGE_TIPS:
+        return jsonify({"error": "No tips available for this item"}), 400
+    return jsonify({
+        "fruit": fruit.capitalize(),
+        "tips": STORAGE_TIPS[fruit]
+    })
 
 # --------------------------------
 # Serve React (Vite build)

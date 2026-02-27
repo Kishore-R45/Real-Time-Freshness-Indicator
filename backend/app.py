@@ -7,6 +7,7 @@ from datetime import date
 from tensorflow.keras.models import load_model
 from utils import preprocess_image
 from decay import compute_all_decay, IDEAL_SHELF, ROOM_SHELF, HIGH_HUMIDITY_SHELF
+from tips import STORAGE_TIPS
 
 app = Flask(__name__)
 CORS(app,
@@ -126,7 +127,8 @@ def predict():
                         decay_data['room_days_left'],
                         decay_data['humid_days_left']
                     ]
-                }
+                },
+                "tips": STORAGE_TIPS.get(fruit, {})
             }
             
             return jsonify(response)
@@ -150,6 +152,17 @@ def get_shelf_life(fruit):
         "ideal": IDEAL_SHELF[fruit],
         "room": ROOM_SHELF[fruit],
         "humid": HIGH_HUMIDITY_SHELF[fruit]
+    })
+
+@app.route('/api/tips/<fruit>', methods=['GET'])
+def get_tips(fruit):
+    fruit = fruit.lower()
+    if fruit not in STORAGE_TIPS:
+        return jsonify({"error": "No tips available for this item"}), 400
+
+    return jsonify({
+        "fruit": fruit.capitalize(),
+        "tips": STORAGE_TIPS[fruit]
     })
 
 if __name__ == '__main__':
